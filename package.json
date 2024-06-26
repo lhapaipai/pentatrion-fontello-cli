@@ -1,0 +1,37 @@
+{
+  "name": "pentatrion-fontello-cli",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lhapaipai/pentatrion-fontello-cli.git"
+  },
+  "homepage": "https://github.com/lhapaipai/pentatrion-fontello-cli",
+  "bin": {
+    "fontello": "./bin/fontello.js"
+  },
+  "files": [
+    "bin/"
+  ],
+  "author": "Hugues Tavernier",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.14.4",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "commander": "^12.1.0",
+    "extract-zip": "^2.0.1",
+    "form-data": "^4.0.0",
+    "open": "^10.1.0",
+    "prompts": "^2.4.2",
+    "rimraf": "^5.0.7"
+  }
+}
