@@ -2,3 +2,4 @@ node_modules/
 playground/
 bin/
 dist/
+/fontello.config.js

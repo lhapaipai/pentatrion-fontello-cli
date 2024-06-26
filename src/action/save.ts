@@ -17,8 +17,10 @@ import { IconSetConfig } from "~/types";
 
 export async function save(iconSetConfig: IconSetConfig, configFile: string) {
   const fontelloDir = dirname(configFile);
-  const { idFile, cssFile, templateFile, woff2File } =
-    getIconSetFiles(fontelloDir);
+  const { idFile, cssFile, templateFile, woff2File } = getIconSetFiles(
+    fontelloDir,
+    iconSetConfig
+  );
 
   existsSync(tmpDir) && rimrafSync(tmpDir);
   mkdirSync(tmpDir, { recursive: true });
@@ -46,7 +48,7 @@ export async function save(iconSetConfig: IconSetConfig, configFile: string) {
     .replaceAll("{{URL_DATA}}", fontData)
     .replaceAll("{{PREFIX}}", zipInfos.configContent.css_prefix_text)
     .replaceAll("{{TIMESTAMP}}", Date.now().toString())
-    .concat(cssCodes);
+    .replaceAll("{{CODES}}", cssCodes);
 
   writeFileSync(cssFile, cssContent, { encoding: "utf-8" });
 

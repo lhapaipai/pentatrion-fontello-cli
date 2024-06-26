@@ -17,10 +17,16 @@ export const templatesDir = resolve(packageDir, "../templates");
 export const projectDir = cwd();
 export const tmpDir = resolve(projectDir, "tmp");
 
-export function getIconSetFiles(fontelloDir: string) {
+export function getIconSetFiles(
+  fontelloDir: string,
+  iconSetConfig: IconSetConfig
+) {
   const idFile = resolve(fontelloDir, ".fontello");
-  const cssFile = resolve(fontelloDir, "fontello.css");
-  const templateFile = resolve(fontelloDir, "fontello.css.template");
+  const cssFile = resolve(fontelloDir, iconSetConfig.cssFile);
+  const templateFile = resolve(
+    fontelloDir,
+    `${iconSetConfig.cssFile}.template`
+  );
   const woff2File = resolve(fontelloDir, "fontello.woff2");
 
   if (!existsSync(idFile)) {
@@ -61,6 +67,7 @@ export async function getIconSetConfig(
   return {
     base: "",
     name: "default",
+    cssFile: "fontello.css",
     ...partialConfig,
   };
 }

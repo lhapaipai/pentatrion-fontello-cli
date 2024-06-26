@@ -1,6 +1,7 @@
 export type IconSetConfig = {
   name: string;
   base: string;
+  cssFile: string;
 };
 export type ProjectConfig = IconSetConfig | IconSetConfig[];
 

@@ -14,7 +14,7 @@ const configFile = resolve(projectDir, iconSetConfig.base, "config.json");
 const templateFile = resolve(
   projectDir,
   iconSetConfig.base,
-  "fontello.css.template"
+  `${iconSetConfig.cssFile}.template`
 );
 if (!existsSync(configFile)) {
   console.log(`config.json doesn't exists for this project\nwe create one.`);

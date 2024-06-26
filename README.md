@@ -26,6 +26,7 @@ If it finds the placeholders
 - `{{URL_DATA}}`
 - `{{PREFIX}}`
 - `{{TIMESTAMP}}`
+- `{{CODES}}`
 
 they will be replaced; otherwise, it will leave what is in place.
 
