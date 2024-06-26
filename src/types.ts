@@ -1,5 +1,5 @@
 export type IconSetConfig = {
-  name: string;
+  fontFamily: string;
   base: string;
   cssFile: string;
 };

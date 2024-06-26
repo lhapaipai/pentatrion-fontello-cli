@@ -45,19 +45,22 @@ export function getIconSetFiles(
 }
 
 export function getZipInfos(zipContentDir: string) {
-  const configFile = resolve(zipContentDir, "config.json");
+  const fontelloConfigFile = resolve(zipContentDir, "config.json");
 
-  let configContent = JSON.parse(
-    readFileSync(configFile, { encoding: "utf-8" })
+  let fontelloConfigContent = JSON.parse(
+    readFileSync(fontelloConfigFile, { encoding: "utf-8" })
   ) as FontelloConfig;
 
-  const woff2File = resolve(zipContentDir, `font/${configContent.name}.woff2`);
+  const woff2File = resolve(
+    zipContentDir,
+    `font/${fontelloConfigContent.name}.woff2`
+  );
   const codesFile = resolve(
     zipContentDir,
-    `css/${configContent.name}-codes.css`
+    `css/${fontelloConfigContent.name}-codes.css`
   );
 
-  return { configFile, woff2File, codesFile, configContent };
+  return { fontelloConfigFile, woff2File, codesFile, fontelloConfigContent };
 }
 
 export async function getIconSetConfig(
@@ -66,7 +69,7 @@ export async function getIconSetConfig(
   const partialConfig = await resolveIconSetConfig(projectDir);
   return {
     base: "",
-    name: "default",
+    fontFamily: "fontello",
     cssFile: "fontello.css",
     ...partialConfig,
   };
@@ -76,7 +79,7 @@ export async function resolveIconSetConfig(
   projectDir: string
 ): Promise<Partial<IconSetConfig>> {
   program.option(
-    "-i, --icons-config <config>",
+    "-f, --fontello-config <config>",
     "Icon Set configuration",
     "config.json"
   );
@@ -88,13 +91,13 @@ export async function resolveIconSetConfig(
   program.parse();
   const options = program.opts();
 
-  let configFile = resolve(projectDir, options.iconsConfig);
+  let fontelloConfigFile = resolve(projectDir, options.fontelloConfig);
   const projectConfigFile = resolve(projectDir, options.projectConfig);
 
-  if (!existsSync(configFile)) {
+  if (!existsSync(fontelloConfigFile)) {
     if (!existsSync(projectConfigFile)) {
       console.log(
-        `${projectConfigFile} or ${configFile} doesn't exists for this project`
+        `${projectConfigFile} or ${fontelloConfigFile} doesn't exists for this project`
       );
       process.exit(0);
     } else {
@@ -114,8 +117,8 @@ export async function resolveIconSetConfig(
             message: "Which Icon set do you want to use ?",
             type: "select",
             name: "iconSetIndex",
-            choices: projectConfig.map(({ name }, index) => ({
-              title: name,
+            choices: projectConfig.map(({ fontFamily }, index) => ({
+              title: fontFamily,
               value: index,
             })),
           },
@@ -126,6 +129,6 @@ export async function resolveIconSetConfig(
   }
 
   return {
-    base: dirname(options.iconsConfig),
+    base: dirname(options.fontelloConfig),
   };
 }

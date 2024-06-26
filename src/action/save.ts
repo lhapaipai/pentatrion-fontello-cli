@@ -36,7 +36,7 @@ export async function save(iconSetConfig: IconSetConfig, configFile: string) {
   );
 
   const zipInfos = getZipInfos(resolve(tmpDir, fontelloDirname!));
-  copyFileSync(zipInfos.configFile, configFile);
+  copyFileSync(zipInfos.fontelloConfigFile, configFile);
   copyFileSync(zipInfos.woff2File, woff2File);
 
   let cssCodes = readFileSync(zipInfos.codesFile, { encoding: "utf-8" });
@@ -44,9 +44,9 @@ export async function save(iconSetConfig: IconSetConfig, configFile: string) {
   const fontData = await getInlineContent(zipInfos.woff2File);
 
   const cssContent = templateContent
-    .replaceAll("{{FONT_FAMILY}}", `fontello-${iconSetConfig.name}`)
+    .replaceAll("{{FONT_FAMILY}}", iconSetConfig.fontFamily)
     .replaceAll("{{URL_DATA}}", fontData)
-    .replaceAll("{{PREFIX}}", zipInfos.configContent.css_prefix_text)
+    .replaceAll("{{PREFIX}}", zipInfos.fontelloConfigContent.css_prefix_text)
     .replaceAll("{{TIMESTAMP}}", Date.now().toString())
     .replaceAll("{{CODES}}", cssCodes);
 
