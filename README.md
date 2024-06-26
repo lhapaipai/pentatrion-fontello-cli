@@ -1,10 +1,12 @@
 # Pentatrion Fontello CLI
 
-Create at the root of the project
+## Installation
 
 ```bash
 pnpm add pentatrion-fontello-cli
 ```
+
+Create at the root of the project
 
 ```js
 // fontello.config.js
@@ -12,13 +14,32 @@ import { defineConfig } from "pentatrion-fontello-cli";
 
 export default defineConfig({
   base: "src/fontello",
-  name: "default"
+  fontFamily: "fontello",
+  cssFile: "fontello.css"
 });
 ```
 
-During the first run, it will create a config.json file and a fontello.css.template file in the fontello folder.
+Run
 
-The fontello.css.template file can be modified and will be used at each save.
+```bash
+pnpm exec fontello
+```
+
+## Explanation
+
+```
+.
+└── src
+    └── fontello
+        ├── config.json
+        ├── fontello.woff2
+        ├── fontello.css
+        └── fontello.css.template
+```
+
+During the first run, it will create a config.json file and a fontello.css.template file in the `base` folder.
+
+The `fontello.css.template` file can be modified and will be used at each save.
 
 If it finds the placeholders
 
@@ -30,7 +51,38 @@ If it finds the placeholders
 
 they will be replaced; otherwise, it will leave what is in place.
 
-If you do not want the font to be embedded in the stylesheet in base64, simply replace in the template file
+example of template file
+
+```css
+@font-face {
+  font-family: "{{FONT_FAMILY}}";
+  src: url("{{URL_DATA}}");
+  font-weight: normal;
+  font-style: normal;
+}
+/* If you don't want inline font use this instead */
+/*
+@font-face {
+  font-family: 'fontello';
+  src: url('./fontello.woff2?{{TIMESTAMP}}');;
+  font-weight: normal;
+  font-style: normal;
+}
+*/
+[class^="{{PREFIX}}"]:before,
+[class*=" {{PREFIX}}"]:before {
+  font-family: "{{FONT_FAMILY}}";
+  font-style: normal;
+  font-weight: normal;
+  speak: never;
+
+  /* etc */
+}
+
+{{CODES}}
+```
+
+If you do not want the font to be embedded in the stylesheet in base64, simply uncomment in the template file
 
 ```css
 @font-face {
@@ -49,12 +101,14 @@ import { defineConfig } from "pentatrion-fontello-cli";
 
 export default defineConfig([
   {
-    name: "default",
+    fontFamily: "fontello-default",
     base: "playground/basic/font",
+    cssFile: "index.css",
   },
   {
-    name: "advanced",
+    fontFamily: "fontello-advanced",
     base: "playground/advanced",
+    cssFile: "index.css",
   },
 ]);
 ```
