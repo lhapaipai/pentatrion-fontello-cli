@@ -1,6 +1,6 @@
 # Pentatrion Fontello CLI
 
-créer à la racine du projet
+Create at the root of the project
 
 ```bash
 pnpm add pentatrion-fontello-cli
@@ -12,26 +12,24 @@ import { defineConfig } from "pentatrion-fontello-cli";
 
 export default defineConfig({
   base: "src/fontello",
-  name: "default",
-  prefix: "fe-"
+  name: "default"
 });
 ```
 
-Lors du premier lancement il va nous créer dans le dossier fontello un fichier `config.json` et un fichier `fontello.css.template`.
+During the first run, it will create a config.json file and a fontello.css.template file in the fontello folder.
 
-le fichier `fontello.css.template` peut être modifié il sera utilisé à chaque enregistrement.
+The fontello.css.template file can be modified and will be used at each save.
 
-s'il trouve les emplacements
+If it finds the placeholders
 
 - `{{FONT_FAMILY}}`
 - `{{URL_DATA}}`
 - `{{PREFIX}}`
 - `{{TIMESTAMP}}`
 
-ils seront remplacés sinon il laissera ce qui est en place.
+they will be replaced; otherwise, it will leave what is in place.
 
-si l'on ne souhaite pas que la font soit intégrée dans la feuille de style en base64
-il suffit de remplacer dans le fichier de template
+If you do not want the font to be embedded in the stylesheet in base64, simply replace in the template file
 
 ```css
 @font-face {
@@ -42,7 +40,7 @@ il suffit de remplacer dans le fichier de template
 }
 ```
 
-## Multi packs d'icônes
+## Multiple Icon Packs
 
 ```js
 // fontello.config.js

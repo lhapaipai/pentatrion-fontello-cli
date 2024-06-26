@@ -6,7 +6,7 @@ import { dirname as dirname4, resolve as resolve4 } from "path";
 import prompts2 from "prompts";
 
 // src/config.ts
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { dirname, resolve } from "path";
 import { cwd } from "process";
 import { fileURLToPath } from "url";
@@ -34,18 +34,23 @@ function getIconSetFiles(fontelloDir) {
     woff2File
   };
 }
-function getZipFiles(zipContentDir) {
-  const config = resolve(zipContentDir, "config.json");
-  const woff2 = resolve(zipContentDir, "font/fontello.woff2");
-  const codes = resolve(zipContentDir, "css/fontello-codes.css");
-  return { config, woff2, codes };
+function getZipInfos(zipContentDir) {
+  const configFile2 = resolve(zipContentDir, "config.json");
+  let configContent = JSON.parse(
+    readFileSync(configFile2, { encoding: "utf-8" })
+  );
+  const woff2File = resolve(zipContentDir, `font/${configContent.name}.woff2`);
+  const codesFile = resolve(
+    zipContentDir,
+    `css/${configContent.name}-codes.css`
+  );
+  return { configFile: configFile2, woff2File, codesFile, configContent };
 }
 async function getIconSetConfig(projectDir2) {
   const partialConfig = await resolveIconSetConfig(projectDir2);
   return {
     base: "",
     name: "default",
-    prefix: "fe-",
     ...partialConfig
   };
 }
@@ -136,7 +141,7 @@ import {
   copyFileSync,
   existsSync as existsSync2,
   mkdirSync,
-  readFileSync as readFileSync2,
+  readFileSync as readFileSync3,
   readdirSync,
   writeFileSync as writeFileSync2
 } from "fs";
@@ -145,7 +150,7 @@ import { rimrafSync } from "rimraf";
 import extractZip from "extract-zip";
 
 // src/util.ts
-import { createWriteStream, readFileSync } from "fs";
+import { createWriteStream, readFileSync as readFileSync2 } from "fs";
 import axios2 from "axios";
 import { fileTypeFromBuffer } from "file-type";
 function downloadFile(url, dstFile) {
@@ -172,7 +177,7 @@ function downloadFile(url, dstFile) {
   });
 }
 async function getInlineContent(path) {
-  const buf = await readFileSync(path);
+  const buf = await readFileSync2(path);
   const result = await fileTypeFromBuffer(buf);
   if (!result) {
     throw new Error(`unable to find Mime Type from ${path}`);
@@ -186,7 +191,7 @@ async function save(iconSetConfig2, configFile2) {
   const { idFile, cssFile, templateFile: templateFile2, woff2File } = getIconSetFiles(fontelloDir);
   existsSync2(tmpDir) && rimrafSync(tmpDir);
   mkdirSync(tmpDir, { recursive: true });
-  const id = readFileSync2(idFile, { encoding: "utf-8" });
+  const id = readFileSync3(idFile, { encoding: "utf-8" });
   const zipFile = resolve3(tmpDir, "fontello.zip");
   await downloadFile(`${fontelloHost}/${id}/get`, zipFile);
   await extractZip(zipFile, { dir: tmpDir });
@@ -194,13 +199,13 @@ async function save(iconSetConfig2, configFile2) {
   const fontelloDirname = files.find(
     (fileName) => fileName.startsWith("fontello-")
   );
-  const zipFiles = getZipFiles(resolve3(tmpDir, fontelloDirname));
-  copyFileSync(zipFiles.config, configFile2);
-  copyFileSync(zipFiles.woff2, woff2File);
-  let cssCodes = readFileSync2(zipFiles.codes, { encoding: "utf-8" });
-  let templateContent = readFileSync2(templateFile2, { encoding: "utf-8" });
-  const fontData = await getInlineContent(zipFiles.woff2);
-  const cssContent = templateContent.replaceAll("{{FONT_FAMILY}}", `fontello-${iconSetConfig2.name}`).replaceAll("{{URL_DATA}}", fontData).replaceAll("{{PREFIX}}", iconSetConfig2.prefix).replaceAll("{{TIMESTAMP}}", Date.now().toString()).concat(cssCodes);
+  const zipInfos = getZipInfos(resolve3(tmpDir, fontelloDirname));
+  copyFileSync(zipInfos.configFile, configFile2);
+  copyFileSync(zipInfos.woff2File, woff2File);
+  let cssCodes = readFileSync3(zipInfos.codesFile, { encoding: "utf-8" });
+  let templateContent = readFileSync3(templateFile2, { encoding: "utf-8" });
+  const fontData = await getInlineContent(zipInfos.woff2File);
+  const cssContent = templateContent.replaceAll("{{FONT_FAMILY}}", `fontello-${iconSetConfig2.name}`).replaceAll("{{URL_DATA}}", fontData).replaceAll("{{PREFIX}}", zipInfos.configContent.css_prefix_text).replaceAll("{{TIMESTAMP}}", Date.now().toString()).concat(cssCodes);
   writeFileSync2(cssFile, cssContent, { encoding: "utf-8" });
   rimrafSync(tmpDir);
 }

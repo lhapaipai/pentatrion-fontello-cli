@@ -1,11 +1,16 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { cwd } from "node:process";
 import { fileURLToPath } from "node:url";
 
 import prompts from "prompts";
 import { program } from "commander";
-import { IconSetConfig, ProjectAnswers, ProjectConfig } from "./types";
+import {
+  FontelloConfig,
+  IconSetConfig,
+  ProjectAnswers,
+  ProjectConfig,
+} from "./types";
 
 export const packageDir = dirname(fileURLToPath(import.meta.url));
 export const templatesDir = resolve(packageDir, "../templates");
@@ -33,12 +38,20 @@ export function getIconSetFiles(fontelloDir: string) {
   };
 }
 
-export function getZipFiles(zipContentDir: string) {
-  const config = resolve(zipContentDir, "config.json");
-  const woff2 = resolve(zipContentDir, "font/fontello.woff2");
-  const codes = resolve(zipContentDir, "css/fontello-codes.css");
+export function getZipInfos(zipContentDir: string) {
+  const configFile = resolve(zipContentDir, "config.json");
 
-  return { config, woff2, codes };
+  let configContent = JSON.parse(
+    readFileSync(configFile, { encoding: "utf-8" })
+  ) as FontelloConfig;
+
+  const woff2File = resolve(zipContentDir, `font/${configContent.name}.woff2`);
+  const codesFile = resolve(
+    zipContentDir,
+    `css/${configContent.name}-codes.css`
+  );
+
+  return { configFile, woff2File, codesFile, configContent };
 }
 
 export async function getIconSetConfig(
@@ -48,7 +61,6 @@ export async function getIconSetConfig(
   return {
     base: "",
     name: "default",
-    prefix: "fe-",
     ...partialConfig,
   };
 }
