@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      version: ${{ steps.check.outputs.local }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version change
+        id: check
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view pentatrion-design version 2>/dev/null || echo "0.0.0")
+          echo "local=$LOCAL_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  release:
+    needs: check
+    if: needs.check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 26.5.0
+          registry-url: https://registry.npmjs.org
+
+      - name: Install npm
+        run: npm i -g npm@^12.0.1
+
+      - name: "Install JS dependencies"
+        run: "npm ci"
+
+      - name: Typecheck / Eslint
+        run: npm run check:type
+
+      - name: Build library
+        run: npm run build
+
+      - name: Publish package
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Tag release
+        run: |
+          git tag "v${{ needs.check.outputs.version }}"
+          git push origin "v${{ needs.check.outputs.version }}"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ needs.check.outputs.version }}"
+          token: ${{ secrets.GITHUB_TOKEN }}

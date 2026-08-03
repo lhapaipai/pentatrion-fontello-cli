@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "check:type": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -24,19 +25,23 @@
   "author": "Hugues Tavernier",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^20.14.4",
+    "@types/node": "^26.0.0",
     "@types/prompts": "^2.4.9",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.2"
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.0"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "commander": "^12.1.0",
+    "axios": "^1.19.0",
+    "commander": "^15.0.0",
     "extract-zip": "^2.0.1",
-    "file-type": "^19.0.0",
-    "form-data": "^4.0.0",
-    "open": "^10.1.0",
+    "file-type": "^22.0.0",
+    "form-data": "^4.0.6",
+    "open": "^11.0.0",
     "prompts": "^2.4.2",
-    "rimraf": "^5.0.7"
+    "rimraf": "^6.0.0"
+  },
+  "volta": {
+    "node": "26.5.0",
+    "npm": "12.0.1"
   }
 }
