@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lhapaipai/pentatrion-fontello-cli.git"
+    "url": "git+https://github.com/lhapaipai/pentatrion-fontello-cli.git"
   },
   "homepage": "https://github.com/lhapaipai/pentatrion-fontello-cli",
   "bin": {
-    "fontello": "./bin/cli.js"
+    "fontello": "bin/cli.js"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,7 +41,7 @@
     "yauzl": "^3.4.0"
   },
   "volta": {
-    "node": "24.16.0",
+    "node": "26.5.0",
     "npm": "12.0.1"
   }
 }
