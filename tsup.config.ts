@@ -9,11 +9,10 @@ export default defineConfig([
       options.external = [
         "axios",
         "commander",
-        "extract-zip",
         "form-data",
         "open",
         "prompts",
-        "rimraf",
+        "yauzl",
       ];
     },
     outDir: "bin",
